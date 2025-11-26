@@ -1,6 +1,6 @@
 local M = {}
 
-local openai = require("_ai/openai")
+local anthropic = require("_ai/anthropic")
 local config = require("_ai/config")
 local indicator = require("_ai/indicator")
 
@@ -53,8 +53,10 @@ function M.ai (args)
     local accumulated_text = ""
 
     local function on_data (data)
-        accumulated_text = accumulated_text .. data.choices[1].text
-        indicator.set_preview_text(indicator_obj, accumulated_text)
+        if data.delta and data.delta.text then
+            accumulated_text = accumulated_text .. data.delta.text
+            indicator.set_preview_text(indicator_obj, accumulated_text)
+        end
     end
 
     local function on_complete (err)
@@ -70,15 +72,10 @@ function M.ai (args)
         local selected_text = table.concat(vim.api.nvim_buf_get_text(buffer, start_row, start_col, end_row, end_col, {}), "\n")
         if prompt == "" then
             -- Replace the selected text, also using it as a prompt
-            openai.completions({
-                prompt = selected_text,
-            }, on_data, on_complete)
+            anthropic.completions(selected_text, nil, on_data, on_complete)
         else
             -- Edit selected text
-            openai.edits({
-                input = selected_text,
-                instruction = prompt,
-            }, on_data, on_complete)
+            anthropic.edits(selected_text, prompt, on_data, on_complete)
         end
     else
         if prompt == "" then
@@ -90,15 +87,10 @@ function M.ai (args)
             local suffix = table.concat(vim.api.nvim_buf_get_text(buffer,
                 end_row, end_col, math.min(end_row+config.context_after, line_count-1), 99999999, {}), "\n")
 
-            openai.completions({
-                prompt = prefix,
-                suffix = suffix,
-            }, on_data, on_complete)
+            anthropic.completions(prefix, suffix, on_data, on_complete)
         else
             -- Insert some text generated using the given prompt
-            openai.completions({
-                prompt = prompt,
-            }, on_data, on_complete)
+            anthropic.completions(prompt, nil, on_data, on_complete)
         end
     end
 end

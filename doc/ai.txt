@@ -1,21 +1,21 @@
-*ai.txt* Plugin for generating and editing text using OpenAI and GPT.
+*ai.txt* Plugin for generating and editing text using Anthropic Claude.
 
 Author: Bruno Garcia <https://github.com/aduros/ai.vim>
 
 ==============================================================================
 INTRODUCTION
 
-*ai.vim* exposes OpenAI's powerful language processing model to Neovim in a
+*ai.vim* exposes Anthropic's powerful Claude language model to Neovim in a
 flexible but easy to use plugin.
 
-You'll need an OpenAI account and to generate an API key here:
+You'll need an Anthropic account and to generate an API key here:
 
-        https://beta.openai.com/account/api-keys
+        https://console.anthropic.com/settings/keys
 
-Then set the `$OPENAI_API_KEY` environment variable, for example, by adding
+Then set the `$ANTHROPIC_API_KEY` environment variable, for example, by adding
 it to your `~/.profile`:
 
-        `export OPENAI_API_KEY="sk-abcdefghijklmnopqrstuvwxyz1234567890"`
+        `export ANTHROPIC_API_KEY="sk-ant-api03-..."`
 
 ==============================================================================
 USAGE
@@ -81,21 +81,13 @@ supplied or text is visually selected.
 ==============================================================================
 CUSTOMIZING
 
-*g:ai_completions_model* (default: "text-davinci-003")
+*g:ai_model* (default: "claude-3-7-sonnet-20250219")
 
-        The model to use for completions.
+        The Claude model to use for all operations.
 
-        For more info, see https://beta.openai.com/docs/models/overview
+        For more info, see https://docs.anthropic.com/en/docs/models-overview
 
-        Example: `let g:ai_completions_model="text-ada-001"`
-
-*g:ai_edits_model* (default: "text-davinci-edit-001")
-
-        The model to use for edits.
-
-        For more info, see https://beta.openai.com/docs/models/overview
-
-        Example: `let g:ai_edits_model="code-davinci-edit-001"`
+        Example: `let g:ai_model="claude-3-5-sonnet-20240620"`
 
 *g:ai_temperature* (default: 0)
 
@@ -136,7 +128,7 @@ CUSTOMIZING
 
 *g:ai_timeout* (default: 60)
 
-        Set the maximum time in seconds to wait for OpenAI requests.
+        Set the maximum time in seconds to wait for Claude API requests.
 
         Example: `let g:ai_timeout=20`
 
